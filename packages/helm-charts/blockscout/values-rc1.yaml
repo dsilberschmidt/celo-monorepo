@@ -50,6 +50,9 @@ blockscout:
     stats:
       enabled: true
       reportUrl: https://datastudio.google.com/embed/reporting/e0a253b1-fa37-43d0-bbc3-2706a64f2211/page/hDehC?hl=en
+  metadata_crawler:
+    enabled: true
+    discord_cluster_name: Mainnet
   metrics:
     enabled: true
   chain:
