@@ -52,3 +52,6 @@ blockscout:
       reportUrl: https://datastudio.google.com/embed/reporting/e0a253b1-fa37-43d0-bbc3-2706a64f2211/page/hDehC?hl=en
   metrics:
     enabled: true
+  chain:
+    subnetwork: Celo
+    networkID: 42220
