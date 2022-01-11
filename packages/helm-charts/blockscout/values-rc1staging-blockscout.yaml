@@ -58,7 +58,7 @@ blockscout:
     jsonrpcHttpUrl: http://rc1staging-archivenodes-rpc:8545
     jsonrpcWsUrl: ws://rc1staging-archivenodes-rpc:8545
   metrics:
-    enabled: true
+    enabled: false
   secrets:
     segmentKey: gcp:secretmanager:projects/365081401101/secrets/rc1staging-blockscout-segmentKey
     dbUser: gcp:secretmanager:projects/365081401101/secrets/rc1staging-blockscout-dbUser
