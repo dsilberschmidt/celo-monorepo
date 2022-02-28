@@ -3,6 +3,7 @@ import { BigNumber } from 'bignumber.js'
 import Web3 from 'web3'
 import { HttpProvider } from 'web3-core'
 import { XMLHttpRequest } from 'xhr2-cookies'
+import { CeloContract } from './base'
 import { API_KEY_HEADER_KEY, newKitFromWeb3, newKitWithApiKey } from './kit'
 import { promiEventSpy } from './test-utils/PromiEventStub'
 
@@ -121,5 +122,13 @@ describe('newKitWithApiKey()', () => {
     // Api Key should be set in the request header
     expect(mockSetRequestHeader).toBeCalledTimes(2)
     expect(mockSetRequestHeader).toBeCalledWith(API_KEY_HEADER_KEY, 'key')
+  })
+})
+
+describe('findUseableFeeCurrency', () => {
+  test('should return gas fee payable currency with highest balance', async () => {
+    const kit = newKitFromWeb3(new Web3('http://'))
+    const feeCurrency = await kit.findUseableFeeCurrency()
+    expect(feeCurrency).toEqual(CeloContract.GoldToken)
   })
 })

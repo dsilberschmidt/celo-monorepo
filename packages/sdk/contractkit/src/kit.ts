@@ -12,9 +12,10 @@ import { LocalWallet } from '@celo/wallet-local'
 import { BigNumber } from 'bignumber.js'
 import net from 'net'
 import Web3 from 'web3'
+import { StableToken } from '.'
 import { AddressRegistry } from './address-registry'
 import { CeloContract, CeloTokenContract } from './base'
-import { CeloTokens, EachCeloToken } from './celo-tokens'
+import { CeloTokens, EachCeloToken, stableTokenInfos } from './celo-tokens'
 import { ValidWrappers, WrapperCache } from './contract-cache'
 import { Web3ContractCache } from './web3-contract-cache'
 import { AttestationsConfig } from './wrappers/Attestations'
@@ -203,6 +204,33 @@ export class ContractKit {
       await this.updateGasPriceInConnectionLayer(address)
     }
     this.connection.defaultFeeCurrency = address
+  }
+
+  /** finds a fee currency with enough balance to use for transactions
+   *  @returns a gasFeePayable Currency
+   */
+  async findUseableFeeCurrency(): Promise<CeloTokenContract> {
+    if (!this.defaultAccount) {
+      throw new Error('Must set default account first')
+    }
+
+    const balances = await this.celoTokens.balancesOf(this.defaultAccount)
+
+    const sortedBalances = Object.entries(balances).sort(([_a, aBalance], [_b, bBalance]) => {
+      if (aBalance && bBalance) {
+        return aBalance.comparedTo(bBalance)
+      } else {
+        return 0
+      }
+    })
+
+    const [bestSymbol, bestBalance] = sortedBalances[0] as [StableToken | 'CELO', BigNumber]
+
+    if (bestSymbol !== 'CELO' && bestBalance.gt(0)) {
+      return stableTokenInfos[bestSymbol as StableToken].contract
+    }
+
+    return CeloContract.GoldToken
   }
 
   // TODO: remove once cUSD gasPrice is available on minimumClientVersion node rpc
