@@ -207,7 +207,7 @@ export class ContractKit {
   }
 
   /** finds a fee currency with enough balance to use for transactions
-   *  @returns a gasFeePayable Currency
+   *  @returns a gasFeePayable Token
    */
   async findUseableFeeCurrency(): Promise<CeloTokenContract> {
     if (!this.defaultAccount) {
@@ -215,7 +215,6 @@ export class ContractKit {
     }
 
     const balances = await this.celoTokens.balancesOf(this.defaultAccount)
-
     const sortedBalances = Object.entries(balances).sort(([_a, aBalance], [_b, bBalance]) => {
       if (aBalance && bBalance) {
         return aBalance.comparedTo(bBalance)

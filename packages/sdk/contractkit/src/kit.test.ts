@@ -1,4 +1,5 @@
 import { CeloTx, CeloTxObject, CeloTxReceipt, JsonRpcPayload, PromiEvent } from '@celo/connect'
+import { privateKeyToAddress } from '@celo/utils/lib/address'
 import { BigNumber } from 'bignumber.js'
 import Web3 from 'web3'
 import { HttpProvider } from 'web3-core'
@@ -15,6 +16,9 @@ interface TransactionObjectStub<T> extends CeloTxObject<T> {
   rejectHash(error: any): void
   rejectReceipt(receipt: CeloTxReceipt, error: any): void
 }
+
+// Take from phone-number-privacy test
+export const PRIVATE_KEY = '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
 
 export function txoStub<T>(): TransactionObjectStub<T> {
   const estimateGasMock = jest.fn()
@@ -126,8 +130,20 @@ describe('newKitWithApiKey()', () => {
 })
 
 describe('findUseableFeeCurrency', () => {
+  describe('when no default account set', () => {
+    test('should throw an error', async () => {
+      const kit = newKitFromWeb3(new Web3('http://localhost:8545'))
+      await expect(kit.findUseableFeeCurrency()).rejects.toThrowError(
+        'Must set default account first'
+      )
+    })
+  })
+
   test('should return gas fee payable currency with highest balance', async () => {
-    const kit = newKitFromWeb3(new Web3('http://'))
+    const kit = newKitFromWeb3(new Web3('http://localhost:8545'))
+    // give test balances to it
+    kit.connection.addAccount(PRIVATE_KEY)
+    kit.defaultAccount = privateKeyToAddress(PRIVATE_KEY)
     const feeCurrency = await kit.findUseableFeeCurrency()
     expect(feeCurrency).toEqual(CeloContract.GoldToken)
   })
