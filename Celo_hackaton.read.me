@@ -1,0 +1,22 @@
+e aim to build an historically stable stablecoin. A coin that revalue the same amount as the inflation expected ( and corrects deviations dinamically). So if one ssc is one base coin today (euro, dollar, etc) and the base coin has 3 percent of inflation expected next year, one ssd will be 1.03 dollars next year. 
+
+During this hackaton i made the first step in a work on progress.
+
+Celo white paper states in its point 3.2 "...When coin supply needs to expand (when the price of Celo Dollar is above the peg), the protocol
+creates new coins (...) But rather than distributing them to token holders, it uses
+them to purchase a basket of cryptocurrencies4 at market rates through a smart contract. These
+purchases get added to the reserves. (...)
+When the coin supply needs to contract, the protocol uses reserve assets to buy Celo Dollars on
+the open market."
+
+The idea to achive a time stable stable coin would be to change the phrase
+"when the price of Celo Dollar is above the peg"
+with 
+"when the price of Celo Dollar is above the price of the real dollar plus cumulative inflation"
+
+And the oposite in the last sentence regarding the same concept.
+
+Following study of the case of creal, and looking in contracts on stability https://github.com/celo-org/celo-monorepo/blob/master/packages/protocol/contracts/stability/ would be great to find a place where these concepts could be replaced.
+(basecoin by basecoin adjusted by cumulative inflation). Was not that simple. 
+But in GrandaMento.sol at function createExchangeProposal there is a putative conditional that could be our target.
+An alternative point would be at level of the oracles SortedOracles.sol (thanks Martin Volpe for the suggestion). In the same way that euro and dollar are stabilized obtaining its actual market value, this scc could be stabilized obtaining basecoin market value and current inflation so cumulating the last one with historical and correcting would have the final value
